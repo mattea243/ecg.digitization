@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>ECG Examiner</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+</head>
+
+<body>
+
+<!-- INTRODUCTION -->
+<div id="introModal" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width:600px; text-align:left; padding:30px;">
+        <h2 style="color:#0a66c2; margin-bottom:8px;">Welcome to ECG Examiner</h2>
+        <p>ECG Examiner is a free, browser-based tool designed to help you view, explore, and better understand electrocardiogram (ECG) recordings — no installation required.</p>
+        <p>Whether you're a medical student learning the basics, a healthcare professional reviewing recordings, or simply someone curious about how the heart works, this tool gives you a clear and interactive way to work with ECG data.</p>
+        <strong style="display:block; margin:14px 0 8px;">What can you do here?</strong>
+        <ul style="line-height:2; padding-left:18px;">
+            <li>📂 <b>Upload an ECG</b> — supports XML files (GE MUSE, Biocare and similar formats) for full digital analysis, as well as ECG images (JPG, PNG) for visual exploration</li>
+            <li>🔍 <b>Zoom and explore</b> — navigate the recording in detail, measure signal values in real time</li>
+            <li>📊 <b>Automated analysis</b> — instantly see Heart Rate, PR Interval, QRS Duration and QTc Interval</li>
+            <li>🫀 <b>Advanced views</b> — explore individual beats, vectorcardiograms, lead comparisons and interval charts</li>
+            <li>📄 <b>Export reports</b> — generate a PDF summary with patient information and findings</li>
+        </ul>
+        <p style="margin-top:14px; padding:10px 14px; background:#fff8e1; border-left:4px solid #f4a261; border-radius:4px; font-size:13px;">
+            ⚠️ <b>Important:</b> This tool is intended for educational and informational purposes only. It is not a certified medical device and should not be used as a substitute for professional clinical judgment.
+        </p>
+        <div style="text-align:center; margin-top:20px;">
+            <button id="startBtn" style="background:#0a66c2; color:white; border:none; padding:10px 30px; border-radius:6px; font-size:15px; cursor:pointer;">
+                Get Started
+            </button>
+        </div>
+    </div>
+</div>
+
+<header>
+    <h1>ECG Image Analyzer</h1>
+</header>
+
+<div class="container">
+    <div class="toolbar" style="display: flex; align-items: center; gap: 10px;">
+        <input type="file" id="upload">
+        <button id="zoomIn">Zoom +</button>
+        <button id="zoomOut">Zoom -</button>
+        <button id="panBtn">✥ Pan: OFF</button>
+        <button id="reset">Reset</button>
+        <button id="backBtn">← Back</button>
+        <button id="saveRegion">Save Region</button>
+
+        <button id="darkModeToggle" style="margin-left: auto; background: #e0e0e0; color: #333; border: 1px solid #ccc; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold;">🌙 Dark Mode</button>
+    </div>
+
+    <!-- PATIENT PANEL -->
+    <div id="patientPanel" style="
+        background: white;
+        border: 1px solid #dce3ec;
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        font-family: Arial, sans-serif;
+    ">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+            <span style="font-size:20px;">🏥</span>
+            <strong style="font-size:15px; color:#0a66c2;">Patient Information</strong>
+            <button onclick="togglePatientPanel()" id="patientToggleBtn" style="
+                margin-left:auto; background:none; border:1px solid #0a66c2;
+                color:#0a66c2; padding:3px 10px; border-radius:5px; cursor:pointer;
+                font-size:12px;">▼ Expand</button>
+        </div>
+
+        <div id="patientFields" style="display:none;">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px;">
+                <div>
+                    <label style="font-size:11px; color:#666; display:block; margin-bottom:3px;">First Name</label>
+                    <input id="patFirstName" type="text" placeholder="John" style="width:100%; padding:7px; border:1px solid #ccc; border-radius:5px; font-size:13px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="font-size:11px; color:#666; display:block; margin-bottom:3px;">Last Name</label>
+                    <input id="patLastName" type="text" placeholder="Smith" style="width:100%; padding:7px; border:1px solid #ccc; border-radius:5px; font-size:13px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="font-size:11px; color:#666; display:block; margin-bottom:3px;">Date of Birth</label>
+                    <input id="patDOB" type="date" style="width:100%; padding:7px; border:1px solid #ccc; border-radius:5px; font-size:13px; box-sizing:border-box;">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px;">
+                <div>
+                    <label style="font-size:11px; color:#666; display:block; margin-bottom:3px;">Gender</label>
+                    <select id="patGender" style="width:100%; padding:7px; border:1px solid #ccc; border-radius:5px; font-size:13px; box-sizing:border-box;">
+                        <option value="">— Select —</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:11px; color:#666; display:block; margin-bottom:3px;">Age</label>
+                    <input id="patAge" type="number" min="0" max="120" placeholder="45" style="width:100%; padding:7px; border:1px solid #ccc; border-radius:5px; font-size:13px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="font-size:11px; color:#666; display:block; margin-bottom:3px;">ID / MRN</label>
+                    <input id="patID" type="text" placeholder="Patient ID" style="width:100%; padding:7px; border:1px solid #ccc; border-radius:5px; font-size:13px; box-sizing:border-box;">
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                <div>
+                    <label style="font-size:11px; color:#666; display:block; margin-bottom:3px;">Cardiac Conditions</label>
+                    <div style="border:1px solid #ccc; border-radius:5px; padding:8px; font-size:12px; display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                        <label><input type="checkbox" value="Atrial Fibrillation"> Atrial Fibrillation</label>
+                        <label><input type="checkbox" value="Heart Failure"> Heart Failure</label>
+                        <label><input type="checkbox" value="Coronary Artery Disease"> Coronary Artery Disease</label>
+                        <label><input type="checkbox" value="Hypertension"> Hypertension</label>
+                        <label><input type="checkbox" value="Myocardial Infarction"> Myocardial Infarction</label>
+                        <label><input type="checkbox" value="Arrhythmia"> Arrhythmia</label>
+                        <label><input type="checkbox" value="Valvular Disease"> Valvular Disease</label>
+                        <label><input type="checkbox" value="Pacemaker"> Pacemaker</label>
+                    </div>
+                </div>
+                <div>
+                    <label style="font-size:11px; color:#666; display:block; margin-bottom:3px;">General Conditions</label>
+                    <div style="border:1px solid #ccc; border-radius:5px; padding:8px; font-size:12px; display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                        <label><input type="checkbox" value="Diabetes"> Diabetes</label>
+                        <label><input type="checkbox" value="COPD"> COPD</label>
+                        <label><input type="checkbox" value="Renal Disease"> Renal Disease</label>
+                        <label><input type="checkbox" value="Stroke"> Stroke</label>
+                        <label><input type="checkbox" value="Obesity"> Obesity</label>
+                        <label><input type="checkbox" value="Sleep Apnea"> Sleep Apnea</label>
+                        <label><input type="checkbox" value="Thyroid Disease"> Thyroid Disease</label>
+                        <label><input type="checkbox" value="Anxiety/Depression"> Anxiety/Depression</label>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:10px;">
+                <label style="font-size:11px; color:#666; display:block; margin-bottom:3px;">Medications</label>
+                <input id="patMeds" type="text" placeholder="e.g. Metoprolol, Aspirin, Warfarin..." style="width:100%; padding:7px; border:1px solid #ccc; border-radius:5px; font-size:13px; box-sizing:border-box;">
+            </div>
+
+            <div style="margin-bottom:10px;">
+                <label style="font-size:11px; color:#666; display:block; margin-bottom:3px;">Clinical Notes</label>
+                <textarea id="patNotes" rows="2" placeholder="Symptoms, reason for ECG, relevant history..." style="width:100%; padding:7px; border:1px solid #ccc; border-radius:5px; font-size:13px; box-sizing:border-box; resize:vertical;"></textarea>
+            </div>
+
+            <div style="text-align:right; gap:8px; display:flex; justify-content:flex-end;">
+                <button onclick="clearPatient()" style="background:#6c757d; color:white; border:none; padding:7px 16px; border-radius:5px; cursor:pointer; font-size:13px;">Clear</button>
+                <button onclick="savePatient()" style="background:#0a66c2; color:white; border:none; padding:7px 16px; border-radius:5px; cursor:pointer; font-size:13px;">💾 Save</button>
+            </div>
+
+            <div id="patSaveMsg" style="display:none; margin-top:8px; padding:7px; background:#d4edda; border-radius:5px; font-size:12px; color:#155724;">
+                ✅ Patient data saved.
+            </div>
+        </div>
+        <!-- ↑ END patientFields -->
+
+    </div>
+    <!-- ↑ END patientPanel -->
+
+    <!-- SUMMARY REPORT — надвор од patientPanel, секогаш видлив -->
+    <div id="summaryReport" style="background: white; border: 1px solid #dce3ec; border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); font-family: Arial, sans-serif;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:20px;">📊</span>
+                <strong style="font-size:15px; color:#0a66c2;">Automated Summary Report</strong>
+            </div>
+            <button id="exportPDF" style="background: #28a745; color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 12px;">📄 Export PDF</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center;">
+            <div style="background: #f8fbff; padding: 10px; border-radius: 8px; border: 1px solid #e1e8f0;">
+                <div style="font-size: 11px; color: #666;">Heart Rate</div>
+                <div id="resHR" style="font-size: 20px; font-weight: bold; color: #0a66c2;">—</div>
+                <div style="font-size: 10px; color: #999;">bpm</div>
+            </div>
+            <div style="background: #f8fbff; padding: 10px; border-radius: 8px; border: 1px solid #e1e8f0;">
+                <div style="font-size: 11px; color: #666;">PR Interval</div>
+                <div id="resPR" style="font-size: 20px; font-weight: bold; color: #0a66c2;">—</div>
+                <div style="font-size: 10px; color: #999;">ms</div>
+            </div>
+            <div style="background: #f8fbff; padding: 10px; border-radius: 8px; border: 1px solid #e1e8f0;">
+                <div style="font-size: 11px; color: #666;">QRS Duration</div>
+                <div id="resQRS" style="font-size: 20px; font-weight: bold; color: #0a66c2;">—</div>
+                <div style="font-size: 10px; color: #999;">ms</div>
+            </div>
+            <div style="background: #f8fbff; padding: 10px; border-radius: 8px; border: 1px solid #e1e8f0;">
+                <div style="font-size: 11px; color: #666;">QTc Interval</div>
+                <div id="resQT" style="font-size: 20px; font-weight: bold; color: #0a66c2;">—</div>
+                <div style="font-size: 10px; color: #999;">ms</div>
+            </div>
+        </div>
+        <div id="resStatus" style="margin-top: 12px; font-size: 13px; font-weight: bold; text-align: center; color: #666;">
+            Status: Awaiting Analysis...
+        </div>
+    </div>
+    <!-- ↑ END summaryReport -->
+
+    <div class="canvas-wrapper">
+        <canvas id="canvas"></canvas>
+        <div id="sideTools">
+            <div class="tool-btn">More Leads</div>
+            <div class="tool-btn">Single Beat</div>
+            <div class="tool-btn">VCG</div>
+            <div class="tool-btn">Rings</div>
+            <div class="tool-btn">Measurements</div>
+            <div class="tool-btn">Intervals</div>
+        </div>
+    </div>
+
+    <div id="coordinates">
+        X: 0 Y: 0
+    </div>
+
+    <div id="digitizerPanel" style="margin-top:10px; padding:10px; background:white; border:2px solid #0a66c2; border-radius:8px; display:none;">
+        <strong>ECG Digitizer</strong>
+        <span id="digiStatus" style="margin-left:10px; color:#666;">— Upload an image to begin</span>
+        <br><br>
+        <button id="digiCalibBtn" style="background:#0a66c2;">📏 Set Calibration</button>
+        <button id="digiScanBtn" style="background:#28a745;">🔍 Scan ECG Line</button>
+        <button id="digiClearBtn" style="background:#dc3545;">✕ Clear</button>
+        <br><br>
+        <div id="digiReadout" style="font-size:18px; font-weight:bold; color:#0a66c2;">
+            Hover over ECG to read values
+        </div>
+        <div id="digiCalibInfo" style="font-size:12px; color:#888; margin-top:5px;"></div>
+    </div>
+
+</div>
+
+<section class="faq">
+
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+        <button class="faq-question">How do I upload an ECG image?</button>
+        <div class="faq-answer">Click the Upload button and select your ECG image from your computer.</div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">How do I zoom the image?</button>
+        <div class="faq-answer">Use the Zoom + and Zoom - buttons to zoom in or out.</div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">How do I select a region?</button>
+        <div class="faq-answer">Click and drag the mouse over the image to select an area.</div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">What file formats are supported?</button>
+        <div class="faq-answer">The application supports JPG, PNG, and JPEG files and XML files.</div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">How do I reset the image?</button>
+        <div class="faq-answer">Click the Reset button to return the image to its original size.</div>
+    </div>
+
+    <div class="faq-item">
+        <button class="faq-question">How do I measure values on the ECG?</button>
+        <div class="faq-answer">Use the measurement tool to calculate distances between two points.</div>
+    </div>
+
+</section>
+
+<!-- CHATBOT BUTTON -->
+<div id="chatButton">💬</div>
+
+<div id="chatWindow">
+    <div id="chatHeader">ECG Assistant</div>
+    <div id="chatMessages">
+        <div class="bot">
+            Hello! Ask me about: upload, zoom, reset, measure
+        </div>
+    </div>
+    <div id="chatInputArea">
+        <input id="chatInput" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script src="digitizer.js"></script>
+<script src="xmlViewer.js"></script>
+<script src="script.js"></script>
+<script src="sidePanel.js"></script>
+
+</body>
+</html>

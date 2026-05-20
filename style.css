@@ -1,0 +1,954 @@
+body {
+
+    margin: 0;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: #f4f8fb;
+
+}
+
+header {
+
+    background: #0a66c2;
+
+    color: white;
+
+    padding: 15px;
+
+    text-align: center;
+
+}
+
+.container {
+
+    padding: 20px;
+
+}
+
+.toolbar {
+
+    margin-bottom: 10px;
+
+}
+
+button {
+
+    background: #28a745;
+
+    color: white;
+
+    border: none;
+
+    padding: 10px;
+
+    margin: 5px;
+
+    cursor: pointer;
+
+    border-radius: 6px;
+
+}
+
+button:hover {
+
+    background: #1e7e34;
+
+}
+
+canvas {
+    border: 2px solid #0a66c2;
+    background: white;
+    display: block;
+
+    width: 1200px;
+    height: 700px;
+
+    max-width: 100%;
+    object-fit: contain;
+
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M11 2v9H2v2h9v9h2v-9h9v-2h-9V2h-2z" fill="black"/></svg>') 12 12, crosshair;
+}
+
+#coordinates {
+
+    margin-top: 10px;
+
+    font-weight: bold;
+
+}
+
+.faq {
+
+    margin-top: 40px;
+
+    padding: 20px;
+
+    background: white;
+
+    border-top: 3px solid #28a745;
+
+}
+
+/* INTRO POPUP */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 30, 60, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: left;
+    max-width: 620px;
+    width: 90%;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    border-top: 5px solid #0a66c2;
+    position: relative;
+}
+
+/* FAQ */
+
+.faq {
+
+    margin-top: 40px;
+
+    padding: 20px;
+
+    background: white;
+
+    border-top: 4px solid #28a745;
+
+}
+
+.faq-item {
+
+    margin-bottom: 10px;
+
+}
+
+.faq-question {
+
+    width: 100%;
+
+    text-align: left;
+
+    background: #4199d3;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    border-radius: 5px;
+
+}
+
+.faq-question:hover {
+
+    background: #084a91;
+
+}
+
+.faq-answer {
+
+    display: none;
+
+    padding: 10px;
+
+    background: #f4f8fb;
+
+    border-left: 3px solid #28a745;
+
+}
+
+/* CHAT BUTTON */
+
+/* CHAT BUTTON */
+#chatButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #0a66c2;
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 999;
+}
+
+/* CHAT WINDOW */
+#chatWindow {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background: white;
+    border: 2px solid #0a66c2;
+    border-radius: 10px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 999;
+}
+
+#chatHeader {
+    background: #0a66c2;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#chatMessages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+.bot {
+    background: #f1f1f1;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+}
+
+.user {
+    background: #28a745;
+    color: white;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    text-align: right;
+}
+
+#chatInputArea {
+    display: flex;
+    border-top: 1px solid #ccc;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    outline: none;
+}
+
+#chatInputArea button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+
+/* ===== CHATGPT STYLE CHAT ===== */
+
+#chatButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #10a37f;
+    color: white;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    z-index: 999;
+}
+
+#chatWindow {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 340px;
+    height: 450px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 999;
+    font-family: Arial, sans-serif;
+}
+
+/* HEADER */
+#chatHeader {
+    background: #10a37f;
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* MESSAGES */
+#chatMessages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background: #f7f7f8;
+    display: flex;
+    flex-direction: column;
+}
+
+/* USER MESSAGE */
+.user {
+    align-self: flex-end;
+    background: #10a37f;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 15px;
+    margin: 5px 0;
+    max-width: 80%;
+}
+
+/* BOT MESSAGE */
+.bot {
+    align-self: flex-start;
+    background: white;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    border-radius: 15px;
+    margin: 5px 0;
+    max-width: 80%;
+}
+
+/* INPUT AREA */
+#chatInputArea {
+    display: flex;
+    border-top: 1px solid #ddd;
+    background: white;
+}
+
+#chatInput {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    outline: none;
+}
+
+#chatInputArea button {
+    background: #10a37f;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+/* TYPING EFFECT (optional future use) */
+.typing {
+    font-style: italic;
+    color: gray;
+}
+/* selection box */
+canvas {
+    position: relative;
+}
+
+canvas.pan-mode {
+    cursor: grab;
+}
+
+canvas.pan-mode:active {
+    cursor: grabbing;
+}
+.container {
+    position: relative; /* 🔥 ОВА Е КЛУЧНО */
+}
+/* ===== SIDE TOOL PANEL (ADD THIS AT THE END) ===== */
+
+.canvas-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 1200px;
+}
+
+#sideTools {
+    position: absolute;
+    top: 0;
+    transform: none;
+    right: -48px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 50;
+}
+
+.tool-btn {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    background: #eaf4ff;
+    border: 2px solid #0a66c2;
+    border-right: none;
+    color: #0a66c2;
+    padding: 12px 8px;
+    border-radius: 10px 0 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+    box-shadow: -2px 4px 10px rgba(0,0,0,0.08);
+}
+
+.tool-btn:hover {
+    background: #0a66c2;
+    color: white;
+}
+
+.tool-divider {
+    height: 10px;
+}
+/* КЛАСИ ЗА ТЕМНА ТЕМА */
+body.dark-mode {
+    background-color: #1a1a1b !important;
+    color: #d1d1d1 !important;
+}
+
+body.dark-mode header {
+    background-color: #121212 !important;
+    border-bottom: 1px solid #333;
+}
+
+/* Белите панели (Patient и Summary) */
+body.dark-mode #patientPanel,
+body.dark-mode #summaryReport,
+body.dark-mode #digitizerPanel {
+    background-color: #252526 !important;
+    border-color: #3f3f40 !important;
+    color: #d1d1d1 !important;
+}
+
+/* FAQ ПОПРАВКА */
+body.dark-mode .faq { background: #1a1a1b !important; border-top-color: #2d5a27; }
+body.dark-mode .faq-question {
+    background-color: #2c3e50 !important; /* Темен деним */
+    color: #ffffff !important; /* Бел читлив фонт */
+}
+body.dark-mode .faq-answer { background: #252526 !important; color: #bbb !important; }
+
+/* CHOOSE FILE ПОПРАВКА */
+body.dark-mode input[type="file"]::-webkit-file-upload-button {
+    background: #333 !important;
+    color: #ccc !important;
+    border: 1px solid #555;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* СТРАНИЧНИ АЛАТКИ И КОПЧИЊА */
+body.dark-mode .tool-btn, body.dark-mode .toolbar button:not(#darkModeToggle) {
+    background-color: #244a2d !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #333 !important;
+}
+
+/* XML КОПЧЕТО И СТАТУСОТ */
+body.dark-mode .xml-upload-label { background: #244a2d !important; color: #ccc !important; }
+body.dark-mode #xmlStatus { color: #888 !important; }
+
+/* КАНВАС И КООРДИНАТИ */
+body.dark-mode #canvas { filter: invert(0.9) hue-rotate(180deg) brightness(0.8); }
+body.dark-mode #coordinates { color: #888 !important; }
+
+/* Основен стил за Dark Mode копчето */
+.mode-toggle-btn {
+    background: #e0e0e0;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+/* Специфични поправки за темната тема */
+body.dark-mode .mode-toggle-btn {
+    background: #333 !important;
+    color: #fff !important;
+    border-color: #555 !important;
+}
+
+/* Картичките во Automated Summary Report (да не се бели) */
+body.dark-mode .summary-card,
+body.dark-mode [class*="card"] {
+    background-color: #2a2a2b !important;
+    color: #fff !important;
+    border: 1px solid #444 !important;
+}
+
+/* Формите за текст (Patient Info) да не се скроз бели */
+body.dark-mode input[type="text"],
+body.dark-mode input[type="number"],
+body.dark-mode input[type="date"],
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #333 !important;
+    color: #eee !important;
+    border: 1px solid #555 !important;
+}
+
+/* Chatbot копчето (долу десно) - позагасена боја */
+body.dark-mode #chatbot-button,
+body.dark-mode .floating-chat-btn,
+body.dark-mode [id*="chat"] {
+    background-color: #1a4a35 !important; /* Темен шумски зелен тон */
+    opacity: 0.8;
+}
+/* Фикс за белите картички во Summary Report кога е вклучен Dark Mode */
+body.dark-mode .summary-card,
+body.dark-mode .metric-card,
+body.dark-mode [style*="background-color: white"],
+body.dark-mode [style*="background: white"] {
+    background-color: #2a2a2b !important; /* Темно сива како панелот */
+    color: #ffffff !important;
+    border: 1px solid #444 !important;
+}
+
+/* Насловите и текстот внатре во тие картички */
+body.dark-mode .summary-card h3,
+body.dark-mode .summary-card p,
+body.dark-mode .metric-value {
+    color: #e0e0e0 !important;
+}
+
+/* Фикс за Чатбот копчето (долу десно) - загасена варијанта */
+body.dark-mode #chatbot-button,
+body.dark-mode .floating-chat-icon,
+body.dark-mode .chat-launcher {
+    background-color: #1e3a2b !important; /* Многу потемна зелена */
+    border: 1px solid #2d5a27 !important;
+    opacity: 0.9;
+}
+
+/* Ако користиш SVG икона во чатботот, малку затемни ја и неа */
+body.dark-mode #chatbot-button img,
+body.dark-mode #chatbot-button svg {
+    filter: brightness(0.8);
+}
+
+/* Глобално затемнување на сите картички во десниот панел */
+body.dark-mode #summaryFields div,
+body.dark-mode .summary-card,
+body.dark-mode [style*="background"] {
+    background-color: #252526 !important;
+    background: #252526 !important;
+    color: #ffffff !important;
+}
+
+/* Ова е трикот - ги правиме сите внатрешни текстови бели */
+body.dark-mode #summaryFields div *,
+body.dark-mode .summary-card * {
+    color: #ffffff !important;
+}
+
+/* Специфично за Chatbot копчето - да биде потемно */
+body.dark-mode #chatButton {
+    background-color: #1a3a2a !important; /* Темен бор */
+    border: 1px solid #2d5a27 !important;
+    opacity: 0.8;
+}
+
+/* Средување на белиот раб (border) ако го има */
+body.dark-mode #summaryFields div {
+    border: 1px solid #444 !important;
+}
+
+/* ПОПРАВКА ЗА ЧИТЛИВОСТ НА ТЕКСТОТ ВО DARK MODE */
+body.dark-mode .summary-card,
+body.dark-mode .metric-card,
+body.dark-mode #summaryFields div {
+    color: #ffffff !important; /* Ги прави сите букви бели */
+}
+
+/* Специфично за вредностите (бројките) како Heart Rate вредноста */
+body.dark-mode .metric-value,
+body.dark-mode .summary-card p,
+body.dark-mode .summary-card span,
+body.dark-mode #summaryFields b,
+body.dark-mode #summaryFields strong {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+/* Средување на "Waiting for analysis..." буквите */
+body.dark-mode #resHR,
+body.dark-mode #resPR,
+body.dark-mode #resQRS,
+body.dark-mode #resQT,
+body.dark-mode [id^="res"] {
+    color: #ffffff !important;
+    font-style: italic; /* За да се разликуваат како резултати */
+}
+
+/* Ако имаш мали сиви наслови над бројките */
+body.dark-mode .summary-card small,
+body.dark-mode .summary-card label {
+    color: #e0e0e0 !important;
+}
+
+/* Ги прави насловите на метриките (Heart Rate, PR Interval...) чисто бели во Dark Mode */
+body.dark-mode .summary-card p,
+body.dark-mode .summary-card h3,
+body.dark-mode .summary-card h4,
+body.dark-mode .summary-card label,
+body.dark-mode .summary-card span:not([id^="res"]) {
+    color: #ffffff !important;
+    opacity: 1 !important; /* Да не бидат избледени */
+    font-weight: 600 !important; /* Малку подебели за подобар контраст */
+}
+
+/* Ако користиш икони или мали ознаки за единици (bpm, ms) кои се уште си*/
+
+/* МОДЕРЕН DARK MODE ЗА ЧАТОТ (Пријатен за очи) */
+body.dark-mode #chatWindow {
+    background-color: #1e1e1e !important; /* Темно сива позадина, не е скроз црна */
+    border: 1px solid #333 !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+    opacity: 1 !important;
+}
+
+body.dark-mode #chatHeader {
+    background-color: #2d2d2d !important; /* Малку посветла нијанса за заглавието */
+    color: #e0e0e0 !important; /* Мека бела боја за буквите */
+    border-bottom: 1px solid #3f3f3f !important;
+}
+
+body.dark-mode #chatMessages {
+    background-color: #1e1e1e !important;
+    color: #d1d1d1 !important;
+}
+
+/* Стилизирање на балончињата со пораки */
+body.dark-mode .bot {
+    background-color: #333333 !important; /* Потемно балонче за ботот */
+    color: #e0e0e0 !important;
+    border-radius: 12px !important;
+}
+
+body.dark-mode .user {
+    background-color: #0a66c2 !important; /* Ја задржуваме сината, но малку потемна */
+    color: #ffffff !important;
+    border-radius: 12px !important;
+}
+
+/* Делот за внесување текст */
+body.dark-mode #chatInputArea {
+    background-color: #252525 !important;
+    border-top: 1px solid #3f3f3f !important;
+}
+
+body.dark-mode #chatInput {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+    border: 1px solid #444 !important;
+    padding: 8px !important;
+    margin: 5px !important;
+    border-radius: 5px !important;
+}
+
+body.dark-mode #chatInput::placeholder {
+    color: #888 !important; /* Потемна боја за placeholder текстот */
+}
+
+body.dark-mode #chatInputArea button {
+    background-color: #0a66c2 !important;
+    color: white !important;
+    border-radius: 5px !important;
+    margin-right: 5px !important;
+}
+
+/* Правиме курсорот (crosshair) да биде светол во Dark Mode за подобра видливост */
+body.dark-mode #canvas {
+    cursor: crosshair;
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* ===== ФИКС ЗА СТРАНИЧНИТЕ КОПЧИЊА (More Leads, Single Beat...) ВО DARK MODE ===== */
+
+/* 1. Поправка за Hover ефектот во Dark Mode */
+body.dark-mode .tool-btn:hover {
+    background-color: #2d5a27 !important; /* Посветла зелена при hover */
+    color: #ffffff !important;
+    border-color: #28a745 !important;
+}
+
+/* 2. Поправка за Активната (кликната) состојба во Dark Mode */
+/* Провери дали користиш класа 'active' во JavaScript кога ќе се кликне копчето */
+body.dark-mode .tool-btn.active,
+body.dark-mode .tool-btn:active {
+    background-color: #1a3a2a !important; /* Многу потемна зелена за да изгледа како втиснато */
+    color: #ffffff !important;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5) !important;
+    border-left: 3px solid #28a745 !important; /* Акцент на линијата */
+}
+
+/* 3. Поправка за модалниот прозорец (More Leads прозорецот од сликата) */
+body.dark-mode .modal-content,
+body.dark-mode [style*="background: white"] {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+    border: 1px solid #444 !important;
+}
+
+/* 4. Поправка за текстот во More Leads прозорецот (насловите V3R, V4R...) */
+body.dark-mode .modal-content h3,
+body.dark-mode .modal-content h4,
+body.dark-mode .modal-content p {
+    color: #e0e0e0 !important;
+}
+
+/* 5. Ако графиконите во More Leads се пресветли */
+body.dark-mode .modal-content canvas {
+    filter: brightness(0.9) contrast(1.1);
+    background: #f0f0f0 !important; /* Малку сивкаста позадина за да не блешти */
+}
+
+
+
+/* ===== СТИЛИЗИРАЊЕ НА ПОД-МЕНИЈАТА (MODALS & TABLES) ВО DARK MODE ===== */
+
+/* 1. Позадината на целиот скокачки прозорец */
+body.dark-mode .modal-content,
+body.dark-mode [style*="background-color: white"],
+body.dark-mode [style*="background: white"] {
+    background-color: #1e1e1e !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #444 !important;
+}
+
+/* 2. Средување на табелите (Intervals, Measurements) во Dark Mode */
+body.dark-mode table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1e1e1e !important;
+    color: #d1d1d1 !important;
+}
+
+/* Заглавието на табелата (сината лента) да биде потемна */
+body.dark-mode th,
+body.dark-mode thead tr {
+    background-color: #084a91 !important; /* Потемна сина */
+    color: #ffffff !important;
+}
+
+/* Редовите на табелата */
+body.dark-mode td {
+    border-bottom: 1px solid #333 !important;
+    padding: 10px;
+    color: #bbb !important; /* Малку посивкаст текст за податоците */
+}
+
+/* Ефект на наизменични редови (Zebra stripes) за подобра прегледност */
+body.dark-mode tr:nth-child(even) {
+    background-color: #252526 !important;
+}
+
+/* 3. Средување на графиконите (Charts) внатре во под-менијата */
+body.dark-mode .chart-container,
+body.dark-mode canvas[id*="Chart"] {
+    background-color: #252526 !important;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* 4. Насловите (Beat-to-beat и сл.) */
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode .modal-header {
+    color: #ffffff !important;
+}
+
+/* 5. Позадината на самите „ќелии“ на табелата ако имаат посебен стил */
+body.dark-mode .interval-row,
+body.dark-mode .measurement-item {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+}
+
+/* ===== THE "NUCLEAR" FIX ЗА ТАБЕЛИТЕ ВО DARK MODE ===== */
+
+/* Овој селектор ги гаѓа сите елементи внатре во модалот и им ја менува позадината со сила */
+body.dark-mode .modal-content,
+body.dark-mode .modal-content div,
+body.dark-mode .modal-content table,
+body.dark-mode .modal-content thead,
+body.dark-mode .modal-content tbody,
+body.dark-mode .modal-content tr,
+body.dark-mode .modal-content td {
+    background-color: #1a1a1b !important; /* Темна позадина */
+    background: #1a1a1b !important;      /* За секој случај ако е ставено како background */
+    color: #ffffff !important;           /* Чисто бел текст */
+    border-color: #444 !important;       /* Темни линии */
+}
+
+/* Средување на наизменичните редови за да не биде сè една боја */
+body.dark-mode .modal-content tr:nth-child(even) td {
+    background-color: #252526 !important;
+}
+
+/* Сината лента во заглавието мора да остане видлива */
+body.dark-mode .modal-content th {
+    background-color: #0a66c2 !important;
+    color: #ffffff !important;
+}
+
+/* Елиминирање на белите рамки околу графиконот */
+body.dark-mode .modal-content .chart-container,
+body.dark-mode .modal-content [style*="background-color: white"] {
+    background-color: #252526 !important;
+    border: 1px solid #444 !important;
+}
+
+/* Средување на сите спанови (бројките 800.0 ms и 75 BPM) */
+body.dark-mode .modal-content td span,
+body.dark-mode .modal-content td b {
+    color: #ffffff !important;
+    background: transparent !important;
+}
+
+
+/* ============================================================
+   DARK MODE — SIDE PANEL MODALS FIX
+   ============================================================ */
+
+body.dark-mode [id$="Modal"] *,
+body.dark-mode [id$="Panel"] *,
+body.dark-mode [id*="Modal"] *,
+body.dark-mode [id*="Panel"] * {
+    background-color: #1e1e1e !important;
+    background: #1e1e1e !important;
+    color: #e0e0e0 !important;
+    border-color: #444 !important;
+}
+
+/* Сината лента во заглавјето да остане сина */
+body.dark-mode [id*="Modal"] [style*="background: #0a66c2"] *,
+body.dark-mode [id*="Modal"] [style*="background:#0a66c2"] * {
+    background-color: #084a91 !important;
+    background: #084a91 !important;
+    color: #ffffff !important;
+}
+
+/* Canvas (графиконите) без инвертирање */
+body.dark-mode [id$="Modal"] canvas,
+body.dark-mode [id*="Modal"] canvas,
+body.dark-mode [id*="Panel"] canvas {
+    background-color: #2a2a2b !important;
+    background: #2a2a2b !important;
+    filter: none !important;
+    border: 1px solid #444 !important;
+}
+
+/* Табела — заглавие (th) сина лента */
+body.dark-mode [id*="Modal"] th,
+body.dark-mode [id*="Panel"] th {
+    background-color: #0a66c2 !important;
+    background: #0a66c2 !important;
+    color: #ffffff !important;
+}
+
+/* Табела — наизменични редови */
+body.dark-mode [id*="Modal"] tr:nth-child(even) td,
+body.dark-mode [id*="Panel"] tr:nth-child(even) td {
+    background-color: #252526 !important;
+    background: #252526 !important;
+}
+
+body.dark-mode [id*="Modal"] tr:nth-child(odd) td,
+body.dark-mode [id*="Panel"] tr:nth-child(odd) td {
+    background-color: #1e1e1e !important;
+    background: #1e1e1e !important;
+}
+
+/* X копчето за затворање */
+body.dark-mode [id*="Modal"] [style*="cursor: pointer"]:hover,
+body.dark-mode [id*="Panel"] [style*="cursor: pointer"]:hover {
+    color: #ff6b6b !important;
+}
+
+
+body.dark-mode .sp-card,
+body.dark-mode .sp-meas-card,
+body.dark-mode .sp-vcg-card,
+body.dark-mode .sp-tacho-wrap,
+body.dark-mode #sidePanelOverlay {
+    background: #1a1a1b !important;
+    border-color: #444 !important;
+    color: #e0e0e0 !important;
+}
+body.dark-mode #sidePanelBody {
+    background: #1a1a1b !important;
+}
+body.dark-mode .sp-title { color: #6ab0f5 !important; border-color: #444 !important; }
+body.dark-mode .sp-lead-name { color: #6ab0f5 !important; }
+body.dark-mode .sp-info { color: #aaa !important; }
+body.dark-mode .sp-meas-val { color: #6ab0f5 !important; }
+body.dark-mode .sp-table td { background: #1e1e1e !important; color: #ccc !important; border-color: #333 !important; }
+body.dark-mode .sp-table tr:nth-child(even) td { background: #252526 !important; }
+body.dark-mode .sp-table th { background: #084a91 !important; }
+body.dark-mode .sp-no-data { color: #666 !important; }
+body.dark-mode .sp-rings-legend span { color: #ccc !important; }
+body.dark-mode .sp-disclaimer { color: #666 !important; }
+
+
+/* ===== ФИКС ЗА ГРАФИКОНИТЕ (VCG, RINGS, INTERVALS) ВО DARK MODE ===== */
+
+/* Ги таргетираме сите канвас елементи и слики внатре во под-менијата */
+body.dark-mode .modal-content canvas,
+body.dark-mode .modal-content img,
+body.dark-mode .chart-container canvas {
+    /* Ова ги претвора белите позадини во темни, а сините линии во портокалови/светли */
+    filter: invert(0.9) hue-rotate(180deg) brightness(1.1) !important;
+    background-color: #1a1a1b !important;
+    border: 1px solid #444 !important;
+    border-radius: 8px;
+}
+
+/* Специфично за Intervals графикот (ако е во посебен контејнер) */
+body.dark-mode .chart-wrapper,
+body.dark-mode #intervalsChart,
+body.dark-mode #vcgCanvas,
+body.dark-mode #ringsCanvas {
+    background-color: #1a1a1b !important;
+    filter: invert(0.9) hue-rotate(180deg) !important;
+}
+
+/* Ако некои наслови внатре во графиконите станат невидливи */
+body.dark-mode .modal-content .chart-legend {
+    color: #ffffff !important;
+}

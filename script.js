@@ -385,6 +385,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
         reader.readAsDataURL(file);
     });
+
     window.addEventListener("resize", function () {
         resizeCanvas();
         draw();
@@ -860,6 +861,119 @@ document.addEventListener("DOMContentLoaded", function () {
 
         doc.save(`ECG_Report_${lastName}.pdf`);
     });
+
+
+
+    /* =========================================================
+   EXPORT PNG/JPG IMAGE AS XML
+   ========================================================= */
+
+    const exportImageXMLButton = document.getElementById("exportImageXML");
+
+    if (exportImageXMLButton) {
+
+        exportImageXMLButton.addEventListener("click", function () {
+
+            const uploadInput = document.getElementById("upload");
+
+            // Проверка дали има избрана слика
+            if (!uploadInput.files || uploadInput.files.length === 0) {
+                alert("Please upload a PNG or JPG image first.");
+                return;
+            }
+
+            const file = uploadInput.files[0];
+
+            // Проверка дали е слика
+            if (!file.type.startsWith("image/")) {
+                alert("Please select a PNG or JPG image.");
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+
+                // Оригиналната слика како Base64
+                const base64Image = event.target.result;
+
+                // Име на датотеката
+                const fileName = file.name;
+
+                // Тип на сликата
+                const fileType = file.type;
+
+                // Големина на сликата
+                const fileSize = file.size;
+
+                // Креирање XML
+                const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<ECGImage>
+    <FileName>${escapeXML(fileName)}</FileName>
+    <Format>${escapeXML(fileType)}</Format>
+    <FileSize>${fileSize}</FileSize>
+    <ImageData>${base64Image}</ImageData>
+</ECGImage>`;
+
+                // XML како Blob
+                const blob = new Blob(
+                    [xml],
+                    {
+                        type: "application/xml;charset=utf-8"
+                    }
+                );
+
+                // Направи download link
+                const url = URL.createObjectURL(blob);
+
+                const link = document.createElement("a");
+
+                link.href = url;
+
+                // Името на XML
+                const dotIndex = fileName.lastIndexOf(".");
+
+                const nameWithoutExtension =
+                    dotIndex !== -1
+                        ? fileName.substring(0, dotIndex)
+                        : fileName;
+
+                link.download = nameWithoutExtension + ".xml";
+
+                // Download
+                document.body.appendChild(link);
+
+                link.click();
+
+                document.body.removeChild(link);
+
+                URL.revokeObjectURL(url);
+
+                alert("ECG image successfully exported as XML!");
+            };
+
+            reader.onerror = function () {
+                alert("Error reading the image.");
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+
+    /* =========================================================
+       XML ESCAPE
+       ========================================================= */
+
+    function escapeXML(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&apos;");
+    }
 
 
 });
